@@ -68,6 +68,7 @@
             font-weight: 500;
             color: #555;
             background-color: #fafafa;
+            cursor: pointer; 
         }
 
         table th div {
@@ -81,7 +82,6 @@
             color: grey;
         }
 
-        
         th:nth-child(3) {
             border-right: 2px solid #ddd; 
         }
@@ -89,7 +89,6 @@
             border-right: 2px solid #ddd; 
         }
         
-
         table td input[type="text"] {
             width: 80%;
             height: 30px;
@@ -150,80 +149,69 @@
             }
         }
         .table-actions button {     
-    background-color: Transparent;
-    background-repeat:no-repeat;
-    border: none;
-    cursor:pointer;
-    overflow: hidden;        
-}
+            background-color: Transparent;
+            background-repeat:no-repeat;
+            border: none;
+            cursor:pointer;
+            overflow: hidden;        
+        }
 
+        @media (max-width: 1024px) {
+            .container {
+                padding: 50px;
+            }
+        }
 
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
 
-@media (max-width: 1024px) {
-    .container {
-        padding: 50px;
-    }
-}
+            table th, table td {
+                padding: 8px;
+                font-size: 14px;
+            }
 
-@media (max-width: 768px) {
-    .container {
-        padding: 20px;
-    }
+            .table-actions button {
+                font-size: 16px;
+            }
+        }
 
-    table th, table td {
-        padding: 8px;
-        font-size: 14px;
-    }
+        @media (max-width: 480px) {
+            .container {
+                padding: 10px;
+            }
 
-    .table-actions button {
-        font-size: 16px;
-    }
-}
+            table th, table td {
+                padding: 6px;
+                font-size: 12px;
+            }
+            .header-row{
+                flex-direction: column;
+            }
+            .table-actions {
+                gap: 10px;
+                padding-top: 5px;
+            }
+        }
 
-@media (max-width: 480px) {
-    .container {
-        padding: 10px;
-    }
+        @media (max-width: 375px) {
+            .container {
+                padding: 10px;
+            }
 
-    table th, table td {
-        padding: 6px;
-        font-size: 12px;
-    }
-    .header-row{
-        flex-direction: column;
-    }
-    .table-actions {
-    
-        gap: 10px;
-        padding-top: 5px;
-    }
-
-    
-    
-}
-
-@media (max-width: 375px) {
-    .container {
-        padding: 10px;
-    }
-
-    table th, table td {
-        padding: 6px;
-        font-size: 12px;
-    }
-    .header-row{
-        flex-direction: column;
-    }
-    .table-actions {
-        /* Stack buttons vertically */
-        gap: 10px;
-        padding-top: 5px;
-    }
-
-    /* Hide less important columns */
-
-    
-}
+            table th, table td {
+                padding: 6px;
+                font-size: 12px;
+            }
+            .header-row{
+                flex-direction: column;
+            }
+            .table-actions {
+                gap: 10px;
+                padding-top: 5px;
+            }
+        }
 
     </style>
 </head>
@@ -246,14 +234,14 @@
                     <tr>
                         <th></th>
                         <th> </th> 
-                        <th>Chemical Name</th>
-                        <th>Vendor</th>
-                        <th>Density</th>
-                        <th>Viscosity</th>
-                        <th>Packaging</th>
-                        <th>Pack Size</th>
-                        <th>Unit</th>
-                        <th>Quantity</th>
+                        <th onclick="sortTable(2)">Chemical Name</th>
+                        <th onclick="sortTable(3)">Vendor</th>
+                        <th onclick="sortTable(4)">Density</th>
+                        <th onclick="sortTable(5)">Viscosity</th>
+                        <th onclick="sortTable(6)">Packaging</th>
+                        <th onclick="sortTable(7)">Pack Size</th>
+                        <th onclick="sortTable(8)">Unit</th>
+                        <th onclick="sortTable(9)">Quantity</th>
                     </tr>
                     <tr>
                         <th></th>
@@ -288,13 +276,13 @@
 
     <script>
         let rowCount = 1; 
+        let sortDirection = true;
 
         function addRow() {
             const table = document.getElementById('chemicalTable').getElementsByTagName('tbody')[0];
             const newRow = table.insertRow();
 
             const selectCell = newRow.insertCell(0);
-            
             selectCell.innerHTML = '<i class="tick-icon" onclick="toggleRowHighlight(this)"><i class="fas fa-check"></i></i>';
 
             const countCell = newRow.insertCell(1);
@@ -356,7 +344,6 @@
             const selectedRows = table.querySelectorAll('tr.selected');
             selectedRows.forEach(row => {
                 row.remove();
-            
                 updateRowCounts();
             });
         }
@@ -370,8 +357,33 @@
         }
 
         function saveTable() {
-            
             alert('Table saved!');
+        }
+
+        function sortTable(columnIndex) {
+            const table = document.getElementById("chemicalTable");
+            const tbody = table.tBodies[0];
+            const rows = Array.from(tbody.rows);
+
+         
+            sortDirection = !sortDirection;
+
+           
+            rows.sort((a, b) => {
+                const cellA = a.cells[columnIndex].textContent.trim();
+                const cellB = b.cells[columnIndex].textContent.trim();
+
+            
+                const valueA = isNaN(cellA) ? cellA : parseFloat(cellA);
+                const valueB = isNaN(cellB) ? cellB : parseFloat(cellB);
+
+                if (valueA < valueB) return sortDirection ? -1 : 1;
+                if (valueA > valueB) return sortDirection ? 1 : -1;
+                return 0;
+            });
+
+         
+            rows.forEach(row => tbody.appendChild(row));
         }
     </script>
 </body>
