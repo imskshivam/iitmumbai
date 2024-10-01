@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chemical Supplies Table</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Montserrat', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
+        }
+
+        td {
+            width: 1px;
+            white-space: nowrap;
+        }
+
+        .container {
+            padding: 150px;
+        }
+
+        .header-row {
+            display: flex; 
+            align-items: center; 
+            justify-content: space-between; 
+            margin-bottom: 20px; 
+        }
+
+        h2 {
+            font-weight: 500;
+            font-size: 24px;
+            margin: 0;
+        }
+
+        .table-actions {
+            display: inline-flex; 
+            gap: 15px; 
+        }
+
+        .table-container {
+            overflow-x: auto;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background-color: #fff;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        table th,
+        table td {
+            padding-top: 20px;
+            text-align: left;
+            border-bottom: none;
+            padding-left: 10px;
+        }
+
+        table th {
+            font-weight: 500;
+            color: #555;
+            background-color: #fafafa;
+        }
+
+        table th div {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        table th div div {
+            margin-top: 5px;
+            color: grey;
+        }
+
+        
+        th:nth-child(3) {
+            border-right: 2px solid #ddd; 
+        }
+        td:nth-child(3) {
+            border-right: 2px solid #ddd; 
+        }
+        
+
+        table td input[type="text"] {
+            width: 80%;
+            height: 30px;
+            padding: 5px;
+            border: 1px solid #ddd;
+            outline: none;
+            font-family: 'Montserrat', sans-serif;
+            background-color: #f9f9f9;
+            transition: border 0.3s ease;
+        }
+
+        table td input[type="text"]:focus {
+            border-color: #007bff;
+        }
+
+        tr.selected {
+            background-color: #eaf1ff;
+        }
+
+        tr:hover {
+            background-color: #f3f3f3;
+        }
+
+        .tick-icon {
+            color: grey;
+            cursor: pointer;
+            font-size: 20px;
+            transition: color 0.3s ease;
+            display: inline-flex; 
+            align-items: center; 
+            justify-content: center; 
+        }
+
+        .tick-icon.selected {
+            color: blue;
+        }
+
+        @media (max-width: 768px) {
+            table th,
+            table td {
+                padding: 8px;
+            }
+
+            .table-actions button {
+                font-size: 18px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            table th,
+            table td {
+                padding: 6px;
+                font-size: 12px;
+            }
+
+            .table-actions button {
+                font-size: 16px;
+            }
+        }
+        .table-actions button {     
+    background-color: Transparent;
+    background-repeat:no-repeat;
+    border: none;
+    cursor:pointer;
+    overflow: hidden;        
+}
+
+
+
+@media (max-width: 1024px) {
+    .container {
+        padding: 50px;
+    }
+}
+
+@media (max-width: 768px) {
+    .container {
+        padding: 20px;
+    }
+
+    table th, table td {
+        padding: 8px;
+        font-size: 14px;
+    }
+
+    .table-actions button {
+        font-size: 16px;
+    }
+}
+
+@media (max-width: 480px) {
+    .container {
+        padding: 10px;
+    }
+
+    table th, table td {
+        padding: 6px;
+        font-size: 12px;
+    }
+    .header-row{
+        flex-direction: column;
+    }
+    .table-actions {
+    
+        gap: 10px;
+        padding-top: 5px;
+    }
+
+    
+    
+}
+
+@media (max-width: 375px) {
+    .container {
+        padding: 10px;
+    }
+
+    table th, table td {
+        padding: 6px;
+        font-size: 12px;
+    }
+    .header-row{
+        flex-direction: column;
+    }
+    .table-actions {
+        /* Stack buttons vertically */
+        gap: 10px;
+        padding-top: 5px;
+    }
+
+    /* Hide less important columns */
+
+    
+}
+
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header-row">
+            <h2>Chemical Supplies</h2>
+            <div class="table-actions">
+                <button onclick="addRow()"><i class="fas fa-plus-circle" ></i></button>
+                <button onclick="moveRow('up')"><i class="fas fa-arrow-up" ></i></button>
+                <button onclick="moveRow('down')"><i class="fas fa-arrow-down" ></i></button>
+                <button onclick="deleteSelectedRows()"><i class="fas fa-trash-alt" ></i></button>
+                <button onclick="saveTable()"><i class="fas fa-save" ></i></button>
+            </div>
+        </div>
+        <div class="table-container">
+            <table id="chemicalTable">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th> </th> 
+                        <th>Chemical Name</th>
+                        <th>Vendor</th>
+                        <th>Density</th>
+                        <th>Viscosity</th>
+                        <th>Packaging</th>
+                        <th>Pack Size</th>
+                        <th>Unit</th>
+                        <th>Quantity</th>
+                    </tr>
+                    <tr>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th>(g/m³)</th>
+                        <th>(m²/s)</th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><i class="tick-icon" onclick="toggleRowHighlight(this)"><i class="fas fa-check"></i></i></td>
+                        <td>1</td> 
+                        <td contenteditable="true">Ammonium Persulfate</td>
+                        <td contenteditable="true">LG Chem</td>
+                        <td><input type="text" value="3525.92"></td>
+                        <td><input type="text" value="60.63"></td>
+                        <td contenteditable="true">Bag</td>
+                        <td contenteditable="true">100.00</td>
+                        <td contenteditable="true">kg</td>
+                        <td><input type="text" value="6495.18"></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        let rowCount = 1; 
+
+        function addRow() {
+            const table = document.getElementById('chemicalTable').getElementsByTagName('tbody')[0];
+            const newRow = table.insertRow();
+
+            const selectCell = newRow.insertCell(0);
+            
+            selectCell.innerHTML = '<i class="tick-icon" onclick="toggleRowHighlight(this)"><i class="fas fa-check"></i></i>';
+
+            const countCell = newRow.insertCell(1);
+            rowCount++; 
+            countCell.innerText = rowCount; 
+
+            const chemicalNameCell = newRow.insertCell(2);
+            chemicalNameCell.setAttribute('contenteditable', 'true');
+            chemicalNameCell.innerText = 'New Chemical';
+
+            const vendorCell = newRow.insertCell(3);
+            vendorCell.setAttribute('contenteditable', 'true');
+            vendorCell.innerText = 'New Vendor';
+
+            const densityCell = newRow.insertCell(4);
+            densityCell.innerHTML = '<input type="text" value="0.00">';
+
+            const viscosityCell = newRow.insertCell(5);
+            viscosityCell.innerHTML = '<input type="text" value="0.00">';
+
+            const packagingCell = newRow.insertCell(6);
+            packagingCell.setAttribute('contenteditable', 'true');
+            packagingCell.innerText = 'New Packaging';
+
+            const packSizeCell = newRow.insertCell(7);
+            packSizeCell.setAttribute('contenteditable', 'true');
+            packSizeCell.innerText = '0.00';
+
+            const unitCell = newRow.insertCell(8);
+            unitCell.setAttribute('contenteditable', 'true');
+            unitCell.innerText = 'kg'; 
+
+            const quantityCell = newRow.insertCell(9);
+            quantityCell.innerHTML = '<input type="text" value="0.00">'; 
+        }
+
+        function toggleRowHighlight(icon) {
+            const row = icon.closest('tr');
+            row.classList.toggle('selected');
+            icon.classList.toggle('selected');
+        }
+
+        function moveRow(direction) {
+            const table = document.getElementById('chemicalTable');
+            const selectedRows = table.querySelectorAll('tr.selected');
+            if (selectedRows.length === 0) return;
+
+            selectedRows.forEach(row => {
+                if (direction === 'up' && row.previousElementSibling) {
+                    table.tBodies[0].insertBefore(row, row.previousElementSibling);
+                } else if (direction === 'down' && row.nextElementSibling) {
+                    table.tBodies[0].insertBefore(row.nextElementSibling, row);
+                }
+            });
+        }
+
+        function deleteSelectedRows() {
+            const table = document.getElementById('chemicalTable');
+            const selectedRows = table.querySelectorAll('tr.selected');
+            selectedRows.forEach(row => {
+                row.remove();
+            
+                updateRowCounts();
+            });
+        }
+
+        function updateRowCounts() {
+            const rows = document.querySelectorAll('#chemicalTable tbody tr');
+            rowCount = rows.length; 
+            rows.forEach((row, index) => {
+                row.cells[1].innerText = index + 1; 
+            });
+        }
+
+        function saveTable() {
+            
+            alert('Table saved!');
+        }
+    </script>
+</body>
+
+</html>
